@@ -1,0 +1,60 @@
+body {
+    margin: 0;
+    overflow: hidden;
+}
+
+#curtain {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+}
+
+.curtain__panel {
+    position: absolute;
+    top: 0;
+    width: 50%;
+    height: 100%;
+    background-color: #8B0000; /* Theater red */
+    transition: transform 1s ease-in-out;
+}
+
+.curtain__panel--left {
+    left: 0;
+    transform-origin: left;
+}
+
+.curtain__panel--right {
+    right: 0;
+    transform-origin: right;
+}
+
+#school-info {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    color: white;
+}
+
+#school-logo {
+    max-width: 200px;
+}
+
+#school-name {
+    font-size: 3em;
+    margin-top: 20px;
+}
+
+.open .curtain__panel--left {
+    transform: scaleX(0);
+}
+
+.open .curtain__panel--right {
+    transform: scaleX(0);
+}
+
+.hidden {
+    display: none;
+}
