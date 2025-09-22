@@ -1,24 +1,30 @@
-// Add this new function to your script.js file
+// script.js
 
 function randomizeBalloons() {
-    const balloons = document.querySelectorAll('.balloon'); // Get all balloon elements
+    const balloons = document.querySelectorAll('.balloon');
 
     balloons.forEach(balloon => {
-        // Generate random values for each balloon
-        const randomLeft = Math.floor(Math.random() * 95); // Random horizontal position from 0% to 95%
-        const randomDuration = Math.random() * 8 + 10;    // Random speed between 10 and 18 seconds
-        const randomDelay = Math.random() * 10;           // Random start delay between 0 and 10 seconds
+        // --- Same as before ---
+        const randomLeft = Math.floor(Math.random() * 95); // Random start position (0% to 94%)
+        const randomDuration = Math.random() * 8 + 10;    // Random speed (10s to 18s)
+        const randomDelay = Math.random() * 10;           // Random start delay (0s to 10s)
 
-        // Apply these random values directly to the balloon's style
+        // --- NEW: Calculate random horizontal drift ---
+        // This will produce a random number between -150 and +150
+        const randomDrift = (Math.random() - 0.5) * 300;
+
+        // Apply all the random values to the balloon's style
         balloon.style.left = `${randomLeft}%`;
         balloon.style.animationDuration = `${randomDuration}s`;
         balloon.style.animationDelay = `${randomDelay}s`;
+
+        // --- NEW: Set the CSS variable for the animation to use ---
+        balloon.style.setProperty('--horizontal-drift', `${randomDrift}px`);
     });
 }
 
-// Now, find your existing event listener and modify it to call the new function.
-
-const studentFiles = ["students/student1.html", "students/student2.html", "students/student3.html"]; // Your student files
+// --- Your existing event listener code (make sure it calls the function as below) ---
+const studentFiles = ["students/student1.html", "students/student2.html", "students/student3.html"];
 let currentStudentIndex = 0;
 
 document.addEventListener('keydown', (event) => {
@@ -32,7 +38,7 @@ document.addEventListener('keydown', (event) => {
             curtain.style.display = 'none';
             presentationContainer.classList.remove('hidden');
             music.play();
-            randomizeBalloons(); // <<< --- ADD THIS LINE HERE!
+            randomizeBalloons(); // This call is still the key!
         }, 1000);
         return;
     }
