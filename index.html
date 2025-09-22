@@ -1,3 +1,4 @@
+<!-- index.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,6 +8,7 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <!-- Curtain from Part 1 -->
     <div id="curtain">
         <div class="curtain__panel curtain__panel--left"></div>
         <div id="school-info">
@@ -15,9 +17,31 @@
         </div>
         <div class="curtain__panel curtain__panel--right"></div>
     </div>
-    <div id="student-carousel" class="hidden">
-        <!-- Student slides will be loaded here -->
+
+    <!-- Student Carousel and Animations -->
+    <div id="presentation-container" class="hidden">
+        <div class="confetti"></div>
+        <div class="confetti"></div>
+        <!-- Add more confetti divs for more particles -->
+        <div class="confetti"></div>
+        <div class="confetti"></div>
+        <div class="confetti"></div>
+
+        <div id="student-carousel">
+            <iframe id="student-frame" src="student1.html" frameborder="0"></iframe>
+        </div>
+
+        <div class="balloons">
+            <img src="balloon.png" alt="balloon" class="balloon">
+            <img src="balloon.png" alt="balloon" class="balloon">
+            <img src="balloon.png" alt="balloon" class="balloon">
+            <!-- Add more balloon images for a fuller effect -->
+        </div>
+
+        <!-- Music Player -->
+        <audio id="background-music" src="music.mp3" loop></audio>
     </div>
+
     <script src="script.js"></script>
 </body>
 </html>
