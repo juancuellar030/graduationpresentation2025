@@ -1,31 +1,37 @@
 // script.js
 
+// --- NEW: Define all your balloon image sources here ---
+const balloonSources = [
+    'assets/images/balloon1.png',
+    'assets/images/balloon2.png'
+    // Add more image paths here if you have more colors!
+    // e.g., 'assets/images/blue_balloon.png'
+];
+
+const studentFiles = ["students/student1.html", "students/student2.html", "students/student3.html"];
+let currentStudentIndex = 0;
+
 function randomizeBalloons() {
     const balloons = document.querySelectorAll('.balloon');
 
     balloons.forEach(balloon => {
-        // --- Same as before ---
-        const randomLeft = Math.floor(Math.random() * 95); // Random start position (0% to 94%)
-        const randomDuration = Math.random() * 8 + 10;    // Random speed (10s to 18s)
-        const randomDelay = Math.random() * 10;           // Random start delay (0s to 10s)
+        // --- NEW: Randomly pick a color for this balloon ---
+        const randomSource = balloonSources[Math.floor(Math.random() * balloonSources.length)];
+        balloon.src = randomSource; // Set the image source
 
-        // --- NEW: Calculate random horizontal drift ---
-        // This will produce a random number between -150 and +150
+        // --- All the previous randomization logic remains the same ---
+        const randomLeft = Math.floor(Math.random() * 95);
+        const randomDuration = Math.random() * 8 + 10;
+        const randomDelay = Math.random() * 10;
         const randomDrift = (Math.random() - 0.5) * 300;
 
-        // Apply all the random values to the balloon's style
         balloon.style.left = `${randomLeft}%`;
         balloon.style.animationDuration = `${randomDuration}s`;
         balloon.style.animationDelay = `${randomDelay}s`;
-
-        // --- NEW: Set the CSS variable for the animation to use ---
         balloon.style.setProperty('--horizontal-drift', `${randomDrift}px`);
     });
 }
 
-// --- Your existing event listener code (make sure it calls the function as below) ---
-const studentFiles = ["students/student1.html", "students/student2.html", "students/student3.html"];
-let currentStudentIndex = 0;
 
 document.addEventListener('keydown', (event) => {
     const curtain = document.getElementById('curtain');
@@ -38,7 +44,7 @@ document.addEventListener('keydown', (event) => {
             curtain.style.display = 'none';
             presentationContainer.classList.remove('hidden');
             music.play();
-            randomizeBalloons(); // This call is still the key!
+            randomizeBalloons(); // This now randomizes color AND animation
         }, 1000);
         return;
     }
