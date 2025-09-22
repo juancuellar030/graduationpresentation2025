@@ -140,28 +140,27 @@ body {
 
 .balloon {
     position: absolute;
-    /* THIS IS THE FIX: A larger negative value ensures balloons are fully hidden on spawn */
-    bottom: -300px;
+    /* FIX 1: Increased negative value to guarantee balloons start off-screen */
+    bottom: -450px;
     width: 180px;
     height: auto;
-    /* The animation name is the only animation property we need here now */
     animation-name: float-up;
     animation-timing-function: linear;
     animation-iteration-count: infinite;
     opacity: 0.9;
 }
-/*
-   NOTE: All the .balloon:nth-child(...) rules have been REMOVED.
-   JavaScript now handles the left position, duration, and delay.
-*/
 
 @keyframes float-up {
     0% {
-        transform: translateY(0) translateX(0) rotate(0deg);
+        transform: translateY(0) rotate(0deg);
     }
     100% {
-        /* Move up past the top of the screen and add a gentle sway */
-        transform: translateY(-150vh) translateX(100px) rotate(20deg);
+        /*
+          FIX 2: We now use a CSS variable (--horizontal-drift) for the sideways movement.
+          This allows each balloon to have a unique, randomized drift direction and distance.
+          The "50px" is just a fallback value in case the variable isn't set.
+        */
+        transform: translateY(-150vh) translateX(var(--horizontal-drift, 50px)) rotate(15deg);
     }
 }
 
