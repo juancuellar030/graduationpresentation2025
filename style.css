@@ -156,11 +156,11 @@ body {
     }
     100% {
         /*
-          FIX 2: We now use a CSS variable (--horizontal-drift) for the sideways movement.
-          This allows each balloon to have a unique, randomized drift direction and distance.
-          The "50px" is just a fallback value in case the variable isn't set.
+          FIX: Increased the travel distance from -150vh to -180vh.
+          This ensures the entire balloon, including its string, goes
+          completely past the top edge of the screen before the loop restarts.
         */
-        transform: translateY(-150vh) translateX(var(--horizontal-drift, 50px)) rotate(15deg);
+        transform: translateY(-180vh) translateX(var(--horizontal-drift, 50px)) rotate(15deg);
     }
 }
 
