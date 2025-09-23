@@ -59,7 +59,6 @@ body {
     display: none;
 }
 
-/* style.css (add this to your existing file) */
 
 /* General Presentation Styles */
 #presentation-container {
@@ -136,46 +135,99 @@ body {
     pointer-events: none; /* Allows clicks to go "through" the frame if needed */
 }
 
+/* --- Advanced Flare Effect (REPLACE all old flare styles) --- */
 
-/* --- Flare Effect Styling (ADD this new section) --- */
-
-/* 4. Use pseudo-elements for the flares to avoid extra HTML */
-.photo-container::before,
-.photo-container::after {
-    content: ''; /* Required for pseudo-elements */
+/* 1. The Wrapper: This div holds and positions our flares. */
+.flare-wrapper {
     position: absolute;
-    z-index: 3; /* Places the flares on top of everything */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 3; /* On top of the frame */
     pointer-events: none;
-
-    /* The flare is a soft, white radial gradient */
-    background: radial-gradient(circle, rgba(255, 255, 255, 0.8) 0%, rgba(255, 255, 255, 0) 60%);
-    width: 100px;
-    height: 100px;
-    opacity: 0; /* Start invisible */
-
-    /* Apply the animation */
-    animation: flare-animation 6s infinite ease-in-out;
+    overflow: hidden; /* Prevents rays from spilling outside the frame */
 }
 
-/* 5. Position the first flare at the top-left */
-.photo-container::before {
-    top: -20px;
-    left: -20px;
+/* 2. The Flare Element: This is the bright core of the flare. */
+.flare-effect {
+    position: absolute;
+    /* This creates the soft, glowing center */
+    background: radial-gradient(
+        circle at center,
+        #FFDAB9 0%, /* Bright yellow-white center */
+        rgba(255, 220, 150, 0.6) 30%,
+        rgba(255, 165, 0, 0.2) 70%,
+        rgba(255, 165, 0, 0) 100%
+    );
+    width: 60px; /* Size of the central glow */
+    height: 60px;
+    border-radius: 50%;
+    display: flex; /* Helps center the rays */
+    justify-content: center;
+    align-items: center;
+
+    /* Apply the new animation */
+    animation: flare-glint 8s infinite ease-in-out;
 }
 
-/* 6. Position the second flare at the bottom-right and delay its animation */
-.photo-container::after {
-    bottom: -20px;
-    right: -20px;
-    animation-delay: 3s; /* Makes the flares appear at different times */
+/* 3. The Rays: We use pseudo-elements to create the cross shape. */
+.flare-effect::before,
+.flare-effect::after {
+    content: '';
+    position: absolute;
+    /* This creates the sharp, orange ray of light */
+    background: linear-gradient(
+        to right,
+        rgba(255, 200, 100, 0),
+        rgba(255, 200, 100, 0.5) 40%,
+        rgba(255, 200, 100, 1) 50%,
+        rgba(255, 200, 100, 0.5) 60%,
+        rgba(255, 200, 100, 0)
+    );
+    width: 300px; /* Length of the ray */
+    height: 2px;  /* Thickness of the ray */
+    border-radius: 2px;
 }
 
-/* 7. The keyframe animation for the fade-in and fade-out effect */
-@keyframes flare-animation {
-    0% { opacity: 0; }
-    30% { opacity: 0.6; } /* Fade in and hold */
-    60% { opacity: 0; } /* Fade out */
-    100% { opacity: 0; } /* Remain invisible for the rest of the duration */
+/* 4. Rotate the rays to form the cross */
+.flare-effect::before {
+    transform: rotate(45deg);
+}
+.flare-effect::after {
+    transform: rotate(-45deg);
+}
+
+
+/* 5. The Animation: Fades in, scales up slightly for a "glint," then fades out. */
+@keyframes flare-glint {
+    0% {
+        opacity: 0;
+        transform: scale(0.5);
+    }
+    20% {
+        opacity: 1;
+        transform: scale(1.1);
+    }
+    40% {
+        opacity: 0;
+        transform: scale(1.5);
+    }
+    100% {
+        opacity: 0;
+    }
+}
+
+/* 6. Position and time the individual flares */
+.flare-effect:nth-child(1) {
+    top: 5%;  /* Position near top-left corner */
+    left: 5%;
+}
+
+.flare-effect:nth-child(2) {
+    bottom: 5%; /* Position near bottom-right corner */
+    right: 5%;
+    animation-delay: 4s; /* Make them appear at different times */
 }
 
 .student-card {
