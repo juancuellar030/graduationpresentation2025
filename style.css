@@ -137,14 +137,16 @@ body {
 
 /* --- Advanced Flare Effect (REPLACE all old flare styles) --- */
 
-/* 1. The Wrapper: This div holds and positions our flares. */
+/* 1. The Wrapper: We are making this box BIGGER than the photo frame. */
 .flare-wrapper {
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 3; /* On top of the frame */
+    /*
+      THIS IS THE FIX: The 'inset' property is shorthand for top, right, bottom, and left.
+      A negative value expands the wrapper by 30px on all sides, making it bigger
+      than the photo container. Now the flares have room to exist without being clipped.
+    */
+    inset: -30px;
+    z-index: 3;
     pointer-events: none;
 }
 
@@ -222,16 +224,18 @@ body {
     }
 }
 
-/* 6. Position and time the individual flares */
+/* 2. Position and time the flares relative to the NEW, LARGER wrapper */
 .flare-effect:nth-child(1) {
-    top: -30px;
-    left: -30px;
+    /* Position it at the top-left corner of the enlarged wrapper */
+    top: 0;
+    left: 0;
 }
 
 .flare-effect:nth-child(2) {
-    top: -30px;
-    left: -30px;
-    animation-delay: 4s; /* Make them appear at different times */
+    /* Position it at the bottom-right corner of the enlarged wrapper */
+    bottom: 0;
+    right: 0;
+    animation-delay: 4s;
 }
 
 .student-card {
