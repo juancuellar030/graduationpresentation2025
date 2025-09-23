@@ -40,14 +40,17 @@ function positionFlareWrapper() {
         const flares = flareWrapper.querySelectorAll('.flare-effect');
         
         if (flares.length >= 2) {
-            // First flare: top-left corner
-            flares[0].style.top = '0px';
-            flares[0].style.left = '0px';
+            // Calculate the frame border thickness (estimate based on typical photo frame proportions)
+            const borderThickness = Math.min(rect.width, rect.height) * 0.04; // Approximately 4% of the smaller dimension
+            
+            // First flare: top-left corner (positioned at the inner corner of the frame border)
+            flares[0].style.top = `${borderThickness}px`;
+            flares[0].style.left = `${borderThickness}px`;
             flares[0].style.transform = 'translate(-50%, -50%)';
             
-            // Second flare: bottom-right corner
-            flares[1].style.top = `${rect.height}px`;
-            flares[1].style.left = `${rect.width}px`;
+            // Second flare: bottom-right corner (positioned at the inner corner of the frame border)
+            flares[1].style.top = `${rect.height - borderThickness}px`;
+            flares[1].style.left = `${rect.width - borderThickness}px`;
             flares[1].style.transform = 'translate(-50%, -50%)';
         }
     }, 100); // Increased delay to ensure iframe content is fully rendered
