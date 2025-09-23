@@ -146,7 +146,6 @@ body {
     height: 100%;
     z-index: 3; /* On top of the frame */
     pointer-events: none;
-    overflow: hidden; /* Prevents rays from spilling outside the frame */
 }
 
 /* 2. The Flare Element: This is the bright core of the flare. */
@@ -225,13 +224,13 @@ body {
 
 /* 6. Position and time the individual flares */
 .flare-effect:nth-child(1) {
-    top: 5%;  /* Position near top-left corner */
-    left: 5%;
+    top: -30px;
+    left: -30px;
 }
 
 .flare-effect:nth-child(2) {
-    bottom: 5%; /* Position near bottom-right corner */
-    right: 5%;
+    top: -30px;
+    left: -30px;
     animation-delay: 4s; /* Make them appear at different times */
 }
 
