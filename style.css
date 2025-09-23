@@ -139,14 +139,12 @@ body {
 
 /* 1. The Main Wrapper: Positioned over the student slide area */
 #flare-wrapper-main {
-    position: absolute;
-    /* These values match the iframe's size and position */
-    width: 80%;
-    height: 80%;
-    top: 10%; /* Vertically center */
-    left: 10%; /* Horizontally center */
-    z-index: 5; /* On top of everything */
-    pointer-events: none; /* Let clicks go through */
+    position: absolute; /* Keep it absolute */
+    z-index: 5;
+    pointer-events: none;
+    /* REMOVED: width, height, top, left are now set by script.js */
+    /* This transition adds a smooth slide if the position changes slightly */
+    transition: all 0.1s ease-out;
 }
 
 /* 2. The Flare Effect itself */
