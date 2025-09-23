@@ -1,3 +1,6 @@
+/* Add this at the very top of style.css */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Playfair+Display:wght@700&display=swap');
+
 body {
     margin: 0;
     overflow: hidden;
@@ -27,6 +30,29 @@ body {
 .curtain__panel--right {
     right: 0;
     transform-origin: right;
+}
+
+/* 1. Apply Playfair Display to the main curtain title */
+#school-name {
+    font-family: 'Playfair Display', serif;
+    font-weight: 700; /* Use the bold version we imported */
+    font-size: 3.5em; /* A little larger for more impact */
+}
+
+/* 2. Apply Playfair Display to the student names inside the card */
+.student-card h2 {
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    font-size: 2.2em;
+    margin-bottom: 20px; /* Add some space below the name */
+}
+
+/* 3. Apply Montserrat to all the paragraph text inside the student card */
+.student-card p {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 400; /* Use the regular version */
+    font-size: 1.1em;
+    line-height: 1.6; /* Improve readability with more line spacing */
 }
 
 #school-info {
