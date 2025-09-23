@@ -135,110 +135,73 @@ body {
     pointer-events: none; /* Allows clicks to go "through" the frame if needed */
 }
 
-/* --- Advanced Flare Effect (REPLACE all old flare styles) --- */
+/* --- FINAL FLARE STYLES (REPLACE ALL OLD FLARE CSS) --- */
 
-/* 1. The Wrapper: We are making this box BIGGER than the photo frame. */
-.flare-wrapper {
+/* 1. The Main Wrapper: Positioned over the student slide area */
+#flare-wrapper-main {
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 3;
-    pointer-events: none;
-    /* The 'inset' property has been removed. */
+    /* These values match the iframe's size and position */
+    width: 80%;
+    height: 80%;
+    top: 10%; /* Vertically center */
+    left: 10%; /* Horizontally center */
+    z-index: 5; /* On top of everything */
+    pointer-events: none; /* Let clicks go through */
 }
 
-/* 2. The Flare Element: This is the bright core of the flare. */
+/* 2. The Flare Effect itself */
 .flare-effect {
     position: absolute;
-    /* This creates the soft, glowing center */
     background: radial-gradient(
         circle at center,
-        #FFFFFF 0%, /* Bright yellow-white center */
-        rgba(255, 255, 255, 0.6) 30%,
-        rgba(255, 255, 255, 0.2) 70%,
-        rgba(255, 255, 255, 0) 100%
+        #FFFFFF 0%, rgba(255, 255, 255, 0.6) 30%,
+        rgba(255, 255, 255, 0.2) 70%, rgba(255, 255, 255, 0) 100%
     );
-    width: 55px; /* Size of the central glow */
+    width: 55px;
     height: 55px;
     border-radius: 55%;
-    display: flex; /* Helps center the rays */
+    display: flex;
     justify-content: center;
     align-items: center;
-
-    /* Apply the new animation */
     animation: flare-glint 10s infinite ease-in-out;
     animation-fill-mode: backwards;
 }
 
-/* 3. The Rays: We use pseudo-elements to create the cross shape. */
+/* 3. The Rays (no changes needed here) */
 .flare-effect::before,
 .flare-effect::after {
     content: '';
     position: absolute;
-    /* This creates the sharp, orange ray of light */
     background: linear-gradient(
         to right,
-        rgba(255, 255, 255, 0),
-        rgba(255, 255, 255, 0.5) 40%,
-        rgba(255, 255, 255, 1) 50%,
-        rgba(255, 255, 255, 0.5) 60%,
+        rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.5) 40%,
+        rgba(255, 255, 255, 1) 50%, rgba(255, 255, 255, 0.5) 60%,
         rgba(255, 255, 255, 0)
     );
-    width: 210px; /* Length of the ray */
-    height: 2px;  /* Thickness of the ray */
+    width: 210px;
+    height: 2px;
     border-radius: 2px;
 }
+.flare-effect::before { transform: rotate(45deg); }
+.flare-effect::after { transform: rotate(-45deg); }
 
-/* 4. Rotate the rays to form the cross */
-.flare-effect::before {
-    transform: rotate(45deg);
-}
-.flare-effect::after {
-    transform: rotate(-45deg);
-}
-
-
-/* 5. The Animation: Fades in, scales up slightly for a "glint," then fades out. */
+/* 4. The Animation (no changes needed here) */
 @keyframes flare-glint {
-    0% {
-        opacity: 0;
-        /* Start with no rotation and small scale */
-        transform: scale(0.5) rotate(0deg);
-    }
-    20% {
-        opacity: 1;
-        /* At its brightest, it has scaled up and rotated halfway */
-        transform: scale(1.1) rotate(90deg);
-    }
-    40% {
-        opacity: 0;
-        /* As it fades out, it completes its spin and gets bigger */
-        transform: scale(1.5) rotate(180deg);
-    }
-    100% {
-        opacity: 0;
-        /* Stay invisible for the rest of the animation cycle */
-        transform: scale(1.5) rotate(180deg);
-    }
+    0% { opacity: 0; transform: scale(0.5) rotate(0deg); }
+    20% { opacity: 1; transform: scale(1.1) rotate(90deg); }
+    40% { opacity: 0; transform: scale(1.5) rotate(180deg); }
+    100% { opacity: 0; transform: scale(1.5) rotate(180deg); }
 }
 
-/* 2. Position and time the flares relative to the NEW, LARGER wrapper */
+/* 5. Precise Corner Positioning */
 .flare-effect:nth-child(1) {
-    position: absolute; /* Position the element's top-left at the container's top-left */
     top: 0;
     left: 0;
-    /* THEN, use transform to shift the element by half its own size,
-       perfectly centering it on the corner. */
     transform: translate(-50%, -50%);
 }
-
 .flare-effect:nth-child(2) {
-    position: absolute; /* Position the element's top-left at the container's bottom-right */
     bottom: 0;
     right: 0;
-    /* THEN, shift it by half its size to center it on the corner. */
     transform: translate(50%, 50%);
     animation-delay: 5s;
 }
