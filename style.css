@@ -94,6 +94,7 @@ body {
     align-items: center;
     height: 100%;
     margin: 0;
+    overflow: visible;
 }
 
 .student-slide {
@@ -140,14 +141,13 @@ body {
 /* 1. The Wrapper: We are making this box BIGGER than the photo frame. */
 .flare-wrapper {
     position: absolute;
-    /*
-      THIS IS THE FIX: The 'inset' property is shorthand for top, right, bottom, and left.
-      A negative value expands the wrapper by 30px on all sides, making it bigger
-      than the photo container. Now the flares have room to exist without being clipped.
-    */
-    inset: -80px;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
     z-index: 3;
     pointer-events: none;
+    /* The 'inset' property has been removed. */
 }
 
 /* 2. The Flare Element: This is the bright core of the flare. */
@@ -227,15 +227,20 @@ body {
 
 /* 2. Position and time the flares relative to the NEW, LARGER wrapper */
 .flare-effect:nth-child(1) {
-    /* Position it at the top-left corner of the enlarged wrapper */
+    position: absolute; /* Position the element's top-left at the container's top-left */
     top: 0;
     left: 0;
+    /* THEN, use transform to shift the element by half its own size,
+       perfectly centering it on the corner. */
+    transform: translate(-50%, -50%);
 }
 
 .flare-effect:nth-child(2) {
-    /* Position it at the bottom-right corner of the enlarged wrapper */
+    position: absolute; /* Position the element's top-left at the container's bottom-right */
     bottom: 0;
     right: 0;
+    /* THEN, shift it by half its size to center it on the corner. */
+    transform: translate(50%, 50%);
     animation-delay: 5s;
 }
 
