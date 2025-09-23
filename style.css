@@ -155,7 +155,7 @@ body {
     /* This creates the soft, glowing center */
     background: radial-gradient(
         circle at center,
-        #FFDAB9 0%, /* Bright yellow-white center */
+        #FFFFFF 0%, /* Bright yellow-white center */
         rgba(255, 255, 255, 0.6) 30%,
         rgba(255, 255, 255, 0.2) 70%,
         rgba(255, 255, 255, 0) 100%
@@ -203,18 +203,23 @@ body {
 @keyframes flare-glint {
     0% {
         opacity: 0;
-        transform: scale(0.5);
+        /* Start with no rotation and small scale */
+        transform: scale(0.5) rotate(0deg);
     }
     20% {
         opacity: 1;
-        transform: scale(1.1);
+        /* At its brightest, it has scaled up and rotated halfway */
+        transform: scale(1.1) rotate(90deg);
     }
     40% {
         opacity: 0;
-        transform: scale(1.5);
+        /* As it fades out, it completes its spin and gets bigger */
+        transform: scale(1.5) rotate(180deg);
     }
     100% {
         opacity: 0;
+        /* Stay invisible for the rest of the animation cycle */
+        transform: scale(1.5) rotate(180deg);
     }
 }
 
