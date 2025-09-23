@@ -145,7 +145,7 @@ body {
       A negative value expands the wrapper by 30px on all sides, making it bigger
       than the photo container. Now the flares have room to exist without being clipped.
     */
-    inset: -30px;
+    inset: -80px;
     z-index: 3;
     pointer-events: none;
 }
@@ -169,7 +169,8 @@ body {
     align-items: center;
 
     /* Apply the new animation */
-    animation: flare-glint 8s infinite ease-in-out;
+    animation: flare-glint 10s infinite ease-in-out;
+    animation-fill-mode: backwards;
 }
 
 /* 3. The Rays: We use pseudo-elements to create the cross shape. */
@@ -235,7 +236,7 @@ body {
     /* Position it at the bottom-right corner of the enlarged wrapper */
     bottom: 0;
     right: 0;
-    animation-delay: 4s;
+    animation-delay: 5s;
 }
 
 .student-card {
