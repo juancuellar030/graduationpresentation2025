@@ -36,22 +36,23 @@ function positionFlareWrapper() {
         flareWrapper.style.top = `${absoluteTop}px`;
         flareWrapper.style.left = `${absoluteLeft}px`;
         
-        // Now position individual flares at the precise corners
+        // Position individual flares independently
         const flares = flareWrapper.querySelectorAll('.flare-effect');
         
         if (flares.length >= 2) {
-            // Calculate the frame border thickness (estimate based on typical photo frame proportions)
-            const borderThickness = Math.min(rect.width, rect.height) * 0.08; // Approximately 4% of the smaller dimension
-            
-            // First flare: top-left corner (positioned at the inner corner of the frame border)
-            flares[0].style.top = `${borderThickness}px`;
-            flares[0].style.left = `${borderThickness}px`;
+            // FLARE 1 (Top-left): Position exactly at the top-left corner of the frame
+            flares[0].style.top = '0px';
+            flares[0].style.left = '0px';
+            flares[0].style.bottom = 'auto';
+            flares[0].style.right = 'auto';
             flares[0].style.transform = 'translate(-50%, -50%)';
             
-            // Second flare: bottom-right corner (positioned at the inner corner of the frame border)
-            flares[1].style.top = `${rect.height - borderThickness}px`;
-            flares[1].style.left = `${rect.width - borderThickness}px`;
-            flares[1].style.transform = 'translate(-50%, -50%)';
+            // FLARE 2 (Bottom-right): Position exactly at the bottom-right corner of the frame
+            flares[1].style.top = 'auto';
+            flares[1].style.left = 'auto';
+            flares[1].style.bottom = '0px';
+            flares[1].style.right = '0px';
+            flares[1].style.transform = 'translate(50%, 50%)';
         }
     }, 100); // Increased delay to ensure iframe content is fully rendered
 }
