@@ -234,7 +234,6 @@ body {
     top: -30px;   /* Start further off-screen */
     opacity: 0.9;
     animation: fall linear infinite;
-    border-radius: 2px; /* Slightly rounded edges */
 
     /*
       THE GOLD EFFECT:
