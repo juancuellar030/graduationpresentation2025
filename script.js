@@ -1,5 +1,5 @@
 const studentFiles = ["students/student1.html", "students/student2.html", "students/student3.html"];
-const balloonSources = ['assets/images/gold_balloon.png', 'assets-images/white_balloon.png'];
+const balloonSources = ['assets/images/balloon1.png', 'assets-images/balloon2.png'];
 let currentStudentIndex = 0;
 
 // Get the elements we need to control from the main page
