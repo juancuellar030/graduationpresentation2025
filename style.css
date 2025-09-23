@@ -185,7 +185,7 @@ body {
         rgba(255, 255, 255, 0.5) 60%,
         rgba(255, 255, 255, 0)
     );
-    width: 300px; /* Length of the ray */
+    width: 220px; /* Length of the ray */
     height: 2px;  /* Thickness of the ray */
     border-radius: 2px;
 }
