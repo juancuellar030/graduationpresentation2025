@@ -41,7 +41,7 @@ function positionFlareWrapper() {
         
         if (flares.length >= 2) {
             // Calculate the frame border thickness (estimate based on typical photo frame proportions)
-            const borderThickness = Math.min(rect.width, rect.height) * 0.04; // Approximately 4% of the smaller dimension
+            const borderThickness = Math.min(rect.width, rect.height) * 0.06; // Approximately 4% of the smaller dimension
             
             // First flare: top-left corner (positioned at the inner corner of the frame border)
             flares[0].style.top = `${borderThickness}px`;
