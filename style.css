@@ -161,9 +161,9 @@ body {
         rgba(255, 255, 255, 0.2) 70%,
         rgba(255, 255, 255, 0) 100%
     );
-    width: 60px; /* Size of the central glow */
-    height: 60px;
-    border-radius: 50%;
+    width: 55px; /* Size of the central glow */
+    height: 55px;
+    border-radius: 55%;
     display: flex; /* Helps center the rays */
     justify-content: center;
     align-items: center;
@@ -186,7 +186,7 @@ body {
         rgba(255, 255, 255, 0.5) 60%,
         rgba(255, 255, 255, 0)
     );
-    width: 220px; /* Length of the ray */
+    width: 210px; /* Length of the ray */
     height: 2px;  /* Thickness of the ray */
     border-radius: 2px;
 }
