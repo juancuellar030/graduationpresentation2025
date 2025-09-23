@@ -11,22 +11,23 @@ const flareWrapper = document.getElementById('flare-wrapper-main');
  * the iframe and moves the flare wrapper to match it perfectly.
  */
 function positionFlareWrapper() {
-    // Get the document inside the iframe
-    const iframeDoc = studentFrame.contentWindow.document;
-    if (!iframeDoc) return; // Exit if the iframe document isn't ready
+    // We wait 50 milliseconds. This is imperceptible to the user, but it gives
+    // the browser enough time to finish all its layout and centering calculations
+    // inside the iframe before we take our measurement. This solves the race condition.
+    setTimeout(() => {
+        const iframeDoc = studentFrame.contentWindow.document;
+        if (!iframeDoc) return;
 
-    // Find the photo container element within the iframe
-    const photoContainer = iframeDoc.querySelector('.photo-container');
-    if (!photoContainer) return; // Exit if the photo container isn't found
+        const photoContainer = iframeDoc.querySelector('.photo-container');
+        if (!photoContainer) return;
 
-    // Get the exact size and position of the photo container relative to the viewport
-    const rect = photoContainer.getBoundingClientRect();
+        const rect = photoContainer.getBoundingClientRect();
 
-    // Apply this position to our main flare wrapper
-    flareWrapper.style.width = `${rect.width}px`;
-    flareWrapper.style.height = `${rect.height}px`;
-    flareWrapper.style.top = `${rect.top}px`;
-    flareWrapper.style.left = `${rect.left}px`;
+        flareWrapper.style.width = `${rect.width}px`;
+        flareWrapper.style.height = `${rect.height}px`;
+        flareWrapper.style.top = `${rect.top}px`;
+        flareWrapper.style.left = `${rect.left}px`;
+    }, 50); // A 50ms delay is all we need.
 }
 
 function randomizeBalloons() {
