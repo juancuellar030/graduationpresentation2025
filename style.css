@@ -164,26 +164,47 @@ body {
     }
 }
 
-/* Confetti Animation */
+/* --- Updated Confetti Animation --- */
 .confetti {
     position: absolute;
-    width: 10px;
-    height: 10px;
-    background-color: #f0f0f0;
-    top: -20px;
-    opacity: 0.8;
+    width: 12px;  /* Slightly bigger for better visual effect */
+    height: 20px; /* Rectangular shape looks more like falling confetti */
+    top: -30px;   /* Start further off-screen */
+    opacity: 0.9;
     animation: fall linear infinite;
+    border-radius: 2px; /* Slightly rounded edges */
+
+    /*
+      THE GOLD EFFECT:
+      We use a linear-gradient as the background. This gradient is designed
+      to simulate light reflecting off a metallic surface.
+      - #FFDF00 (Golden Yellow): Main color
+      - #D4AF37 (Gold): A slightly darker shade for depth
+      - #FFF8C7 (Light Yellow/White): A bright highlight
+      - #B8860B (Dark Goldenrod): A shadow color
+      The angle (125deg) makes the light appear to come from the top-left.
+    */
+    background-image: linear-gradient(125deg, #FFDF00, #D4AF37, #FFF8C7, #B8860B);
 }
 
-.confetti:nth-child(1) { left: 10%; animation: fall 10s linear infinite; background-color: #ffd700; }
-.confetti:nth-child(2) { left: 20%; animation: fall 8s linear 2s infinite; background-color: #ff4500; }
-.confetti:nth-child(3) { left: 40%; animation: fall 12s linear 5s infinite; background-color: #00ced1; }
-.confetti:nth-child(4) { left: 70%; animation: fall 9s linear 1s infinite; background-color: #9370db; }
-.confetti:nth-child(5) { left: 85%; animation: fall 7s linear 3s infinite; background-color: #32cd32; }
+/*
+  We no longer need different background-colors for each child,
+  but we still want them to fall at different speeds and times.
+*/
+.confetti:nth-child(1) { left: 10%; animation: fall 10s linear infinite; }
+.confetti:nth-child(2) { left: 20%; animation: fall 8s linear 2s infinite; }
+.confetti:nth-child(3) { left: 40%; animation: fall 12s linear 5s infinite; }
+.confetti:nth-child(4) { left: 70%; animation: fall 9s linear 1s infinite; }
+.confetti:nth-child(5) { left: 85%; animation: fall 7s linear 3s infinite; }
+/* Add more if you have more confetti divs */
+.confetti:nth-child(6) { left: 50%; animation: fall 11s linear 4s infinite; }
+.confetti:nth-child(7) { left: 80%; animation: fall 9s linear 6s infinite; }
 
+
+/* The falling animation with rotation remains the same */
 @keyframes fall {
     to {
-        transform: translateY(100vh) rotate(360deg);
+        transform: translateY(100vh) rotate(720deg); /* Increased rotation for more flutter */
         opacity: 0;
     }
 }
