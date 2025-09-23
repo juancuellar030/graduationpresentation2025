@@ -191,16 +191,7 @@ body {
     100% { opacity: 0; transform: scale(1.5) rotate(180deg); }
 }
 
-/* 5. Precise Corner Positioning */
-.flare-effect:nth-child(1) {
-    top: 0;
-    left: 0;
-    transform: translate(-50%, -50%);
-}
 .flare-effect:nth-child(2) {
-    bottom: 0;
-    right: 0;
-    transform: translate(50%, 50%);
     animation-delay: 5s;
 }
 
