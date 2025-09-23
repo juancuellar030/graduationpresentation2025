@@ -7,27 +7,50 @@ const studentFrame = document.getElementById('student-frame');
 const flareWrapper = document.getElementById('flare-wrapper-main');
 
 /**
- * This is the new, critical function. It measures the photo frame inside
- * the iframe and moves the flare wrapper to match it perfectly.
+ * This function positions the flare wrapper to match the SVG frame precisely
+ * and positions individual flares at the exact corners of the frame
  */
 function positionFlareWrapper() {
-    // We wait 50 milliseconds. This is imperceptible to the user, but it gives
-    // the browser enough time to finish all its layout and centering calculations
-    // inside the iframe before we take our measurement. This solves the race condition.
+    // Wait for iframe content to fully load and position
     setTimeout(() => {
         const iframeDoc = studentFrame.contentWindow.document;
         if (!iframeDoc) return;
 
-        const photoContainer = iframeDoc.querySelector('.photo-container');
-        if (!photoContainer) return;
+        // Target the SVG frame instead of the photo container
+        const frameSvg = iframeDoc.querySelector('.frame-svg');
+        if (!frameSvg) return;
 
-        const rect = photoContainer.getBoundingClientRect();
+        // Get the SVG frame's position and dimensions
+        const rect = frameSvg.getBoundingClientRect();
+        
+        // Get the iframe's position relative to the main document
+        const iframeRect = studentFrame.getBoundingClientRect();
+        
+        // Calculate the absolute position of the SVG frame in the main document
+        const absoluteTop = iframeRect.top + rect.top;
+        const absoluteLeft = iframeRect.left + rect.left;
 
+        // Position the flare wrapper to match the SVG frame exactly
         flareWrapper.style.width = `${rect.width}px`;
         flareWrapper.style.height = `${rect.height}px`;
-        flareWrapper.style.top = `${rect.top}px`;
-        flareWrapper.style.left = `${rect.left}px`;
-    }, 50); // A 50ms delay is all we need.
+        flareWrapper.style.top = `${absoluteTop}px`;
+        flareWrapper.style.left = `${absoluteLeft}px`;
+        
+        // Now position individual flares at the precise corners
+        const flares = flareWrapper.querySelectorAll('.flare-effect');
+        
+        if (flares.length >= 2) {
+            // First flare: top-left corner
+            flares[0].style.top = '0px';
+            flares[0].style.left = '0px';
+            flares[0].style.transform = 'translate(-50%, -50%)';
+            
+            // Second flare: bottom-right corner
+            flares[1].style.top = `${rect.height}px`;
+            flares[1].style.left = `${rect.width}px`;
+            flares[1].style.transform = 'translate(-50%, -50%)';
+        }
+    }, 100); // Increased delay to ensure iframe content is fully rendered
 }
 
 function randomizeBalloons() {
