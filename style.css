@@ -103,17 +103,79 @@ body {
     gap: 50px;
 }
 
-.photo-frame {
-    position: relative;
+/* --- Photo Frame Styling (REPLACE old rules with this) --- */
+
+/* 1. The main container that holds the photo, frame, and flares */
+.photo-container {
+    position: relative; /* This is crucial for positioning the children */
+    width: 350px;       /* Set the overall width of the frame area */
+    height: 450px;      /* Set the overall height of the frame area */
 }
 
+/* 2. The student's actual photo */
 .student-photo {
+    position: absolute; /* Allows us to stack it */
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%); /* Centers the photo perfectly */
+    width: 85%;         /* Adjust this percentage to fit INSIDE your frame */
+    height: 90%;        /* Adjust this percentage to fit INSIDE your frame */
+    object-fit: cover;  /* Ensures the photo fills the space without distortion */
+    z-index: 1;         /* Puts the photo behind the frame */
+    border-radius: 5px; /* Optional: slightly rounds corners if they poke out */
+}
+
+/* 3. Your SVG photo frame */
+.frame-svg {
+    position: absolute; /* Allows us to stack it */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 2;         /* Puts the frame ON TOP of the photo */
+    pointer-events: none; /* Allows clicks to go "through" the frame if needed */
+}
+
+
+/* --- Flare Effect Styling (ADD this new section) --- */
+
+/* 4. Use pseudo-elements for the flares to avoid extra HTML */
+.photo-container::before,
+.photo-container::after {
+    content: ''; /* Required for pseudo-elements */
     position: absolute;
-    top: 20px;
-    left: 20px;
-    width: 300px;
-    height: 400px;
-    object-fit: cover;
+    z-index: 3; /* Places the flares on top of everything */
+    pointer-events: none;
+
+    /* The flare is a soft, white radial gradient */
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.8) 0%, rgba(255, 255, 255, 0) 60%);
+    width: 100px;
+    height: 100px;
+    opacity: 0; /* Start invisible */
+
+    /* Apply the animation */
+    animation: flare-animation 6s infinite ease-in-out;
+}
+
+/* 5. Position the first flare at the top-left */
+.photo-container::before {
+    top: -20px;
+    left: -20px;
+}
+
+/* 6. Position the second flare at the bottom-right and delay its animation */
+.photo-container::after {
+    bottom: -20px;
+    right: -20px;
+    animation-delay: 3s; /* Makes the flares appear at different times */
+}
+
+/* 7. The keyframe animation for the fade-in and fade-out effect */
+@keyframes flare-animation {
+    0% { opacity: 0; }
+    30% { opacity: 0.6; } /* Fade in and hold */
+    60% { opacity: 0; } /* Fade out */
+    100% { opacity: 0; } /* Remain invisible for the rest of the duration */
 }
 
 .student-card {
