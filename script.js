@@ -1,35 +1,76 @@
-// script.js (Final Version with Confetti Randomization)
-
 const studentFiles = ["students/student1.html", "students/student2.html", "students/student3.html"];
-const balloonSources = ['assets/images/gold_balloon.png', 'assets/images/white_balloon.png'];
+const balloonSources = ['assets/images/balloon1.png', 'assets/images/balloon2.png'];
 let currentStudentIndex = 0;
 
+// Get the elements we need to control from the main page
 const studentFrame = document.getElementById('student-frame');
 const flareWrapper = document.getElementById('flare-wrapper-main');
 
+/**
+ * This function positions the flare wrapper to match the SVG frame precisely
+ * and positions individual flares at the exact corners of the frame
+ */
 function positionFlareWrapper() {
+    // Wait for iframe content to fully load and position
     setTimeout(() => {
         const iframeDoc = studentFrame.contentWindow.document;
         if (!iframeDoc) return;
-        const photoContainer = iframeDoc.querySelector('.photo-container');
-        if (!photoContainer) return;
-        const rect = photoContainer.getBoundingClientRect();
+
+        // Target the SVG frame instead of the photo container
+        const frameSvg = iframeDoc.querySelector('.frame-svg');
+        if (!frameSvg) return;
+
+        // Get the SVG frame's position and dimensions
+        const rect = frameSvg.getBoundingClientRect();
+        
+        // Get the iframe's position relative to the main document
+        const iframeRect = studentFrame.getBoundingClientRect();
+        
+        // Calculate the absolute position of the SVG frame in the main document
+        const absoluteTop = iframeRect.top + rect.top;
+        const absoluteLeft = iframeRect.left + rect.left;
+
+        // Position the flare wrapper to match the SVG frame exactly
         flareWrapper.style.width = `${rect.width}px`;
         flareWrapper.style.height = `${rect.height}px`;
-        flareWrapper.style.top = `${rect.top}px`;
-        flareWrapper.style.left = `${rect.left}px`;
-    }, 50);
+        flareWrapper.style.top = `${absoluteTop}px`;
+        flareWrapper.style.left = `${absoluteLeft}px`;
+        
+        // Position individual flares independently
+        const flares = flareWrapper.querySelectorAll('.flare-effect');
+        
+        if (flares.length >= 2) {
+            // FLARE 1 (Top-left): Position exactly at the top-left corner of the frame
+            flares[0].style.top = '0px';
+            flares[0].style.left = '0px';
+            flares[0].style.bottom = 'auto';
+            flares[0].style.right = 'auto';
+            flares[0].style.transform = 'translate(-50%, -50%)';
+            
+            // FLARE 2 (Bottom-right): Position exactly at the bottom-right corner of the frame
+            flares[1].style.top = 'auto';
+            flares[1].style.left = 'auto';
+            flares[1].style.bottom = '0px';
+            flares[1].style.right = '0px';
+            flares[1].style.transform = 'translate(50%, 50%)';
+        }
+    }, 100); // Increased delay to ensure iframe content is fully rendered
 }
 
 function randomizeBalloons() {
     const balloons = document.querySelectorAll('.balloon');
+
     balloons.forEach(balloon => {
+        // --- NEW: Randomly pick a color for this balloon ---
         const randomSource = balloonSources[Math.floor(Math.random() * balloonSources.length)];
-        balloon.src = randomSource;
+        balloon.src = randomSource; // Set the image source
+
+        // --- All the previous randomization logic remains the same ---
         const randomLeft = Math.floor(Math.random() * 95);
         const randomDuration = Math.random() * 8 + 10;
         const randomDelay = Math.random() * 10;
         const randomDrift = (Math.random() - 0.5) * 300;
+
         balloon.style.left = `${randomLeft}%`;
         balloon.style.animationDuration = `${randomDuration}s`;
         balloon.style.animationDelay = `${randomDelay}s`;
@@ -37,35 +78,13 @@ function randomizeBalloons() {
     });
 }
 
-/**
- * NEW: This function gives each piece of confetti a completely
- * unique and random animation path, just like in the video.
- */
-function randomizeConfetti() {
-    const confettis = document.querySelectorAll('.confetti');
-    confettis.forEach(c => {
-        const randomLeft = Math.random() * 100; // Random start position (0% to 100%)
-        const randomDuration = Math.random() * 5 + 8; // Random fall speed (8s to 13s)
-        const randomDelay = Math.random() * 10; // Random start time (0s to 10s)
-        const randomDrift = (Math.random() - 0.5) * 250; // Random drift (-125px to 125px)
-        const randomRotation = (Math.random() - 0.5) * 1440; // Random tumble (-720deg to 720deg)
-
-        c.style.left = `${randomLeft}%`;
-        c.style.animationDuration = `${randomDuration}s`;
-        c.style.animationDelay = `${randomDelay}s`;
-        c.style.setProperty('--confetti-drift', `${randomDrift}px`);
-        c.style.setProperty('--confetti-rotation', `${randomRotation}deg`);
-    });
-}
-
-
-// --- Event Listeners ---
 studentFrame.onload = positionFlareWrapper;
 
 document.addEventListener('keydown', (event) => {
     const curtain = document.getElementById('curtain');
     const presentationContainer = document.getElementById('presentation-container');
     const music = document.getElementById('background-music');
+
     if (!curtain.classList.contains('open')) {
         curtain.classList.add('open');
         setTimeout(() => {
@@ -73,11 +92,12 @@ document.addEventListener('keydown', (event) => {
             presentationContainer.classList.remove('hidden');
             music.play();
             randomizeBalloons();
-            randomizeConfetti(); // <<< --- ADD THIS LINE HERE
+            // Run the positioning for the very first slide
             positionFlareWrapper();
         }, 1000);
         return;
     }
+
     if (event.key === 'ArrowRight') {
         currentStudentIndex = (currentStudentIndex + 1) % studentFiles.length;
         studentFrame.src = studentFiles[currentStudentIndex];
@@ -86,4 +106,6 @@ document.addEventListener('keydown', (event) => {
         studentFrame.src = studentFiles[currentStudentIndex];
     }
 });
+
+// Also, let's reposition the flares if the window is resized
 window.addEventListener('resize', positionFlareWrapper);
