@@ -63,17 +63,23 @@ function randomizeBalloons() {
 function randomizeConfetti() {
     const confettis = document.querySelectorAll('.confetti');
     confettis.forEach(c => {
-        const randomLeft = Math.random() * 100; // Random start position (0% to 100%)
-        const randomDuration = Math.random() * 5 + 8; // Random fall speed (8s to 13s)
-        const randomDelay = Math.random() * 10; // Random start time (0s to 10s)
-        const randomDrift = (Math.random() - 0.5) * 250; // Random drift (-125px to 125px)
-        const randomRotation = (Math.random() - 0.5) * 1440; // Random tumble (-720deg to 720deg)
+        const randomLeft = Math.random() * 100;
+        const randomDuration = Math.random() * 5 + 8;
+        const randomDelay = Math.random() * 10;
+        const randomDrift = (Math.random() - 0.5) * 250;
+        const randomRotation = (Math.random() - 0.5) * 1440; // 2D flat spin
+
+        // NEW: Add a random value for the 3D vertical tumble (rotateX)
+        const randomSpinX = Math.random() * 1080 + 720; // Tumbles between 2 and 5 times
 
         c.style.left = `${randomLeft}%`;
         c.style.animationDuration = `${randomDuration}s`;
         c.style.animationDelay = `${randomDelay}s`;
         c.style.setProperty('--confetti-drift', `${randomDrift}px`);
         c.style.setProperty('--confetti-rotation', `${randomRotation}deg`);
+
+        // NEW: Set the CSS variable for our new 3D spin
+        c.style.setProperty('--confetti-spin-x', `${randomSpinX}deg`);
     });
 }
 
