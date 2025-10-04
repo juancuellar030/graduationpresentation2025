@@ -276,7 +276,7 @@ body {
     height: 20px;
     top: -30px;
     opacity: 0.9;
-    background-image: linear-gradient(125deg, #EAD99E, #D4AF37, #FFF8C7, #9A7109);
+    background-image: linear-gradient(125deg, #F0D886, #D4AF37, #FFF8C7, #A8882F);
 
     /* The animation properties are now set by JavaScript, so we only need the name here */
     animation-name: fall;
