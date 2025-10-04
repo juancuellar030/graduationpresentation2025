@@ -269,46 +269,34 @@ body {
     }
 }
 
-/* --- Updated Confetti Animation --- */
+/* --- Updated Confetti Animation (REPLACE the old section) --- */
 .confetti {
     position: absolute;
-    width: 12px;  /* Slightly bigger for better visual effect */
-    height: 20px; /* Rectangular shape looks more like falling confetti */
-    top: -30px;   /* Start further off-screen */
+    width: 12px;
+    height: 20px;
+    top: -30px;
     opacity: 0.9;
-    animation: fall linear infinite;
-
-    /*
-      THE GOLD EFFECT:
-      We use a linear-gradient as the background. This gradient is designed
-      to simulate light reflecting off a metallic surface.
-      - #FFDF00 (Golden Yellow): Main color
-      - #D4AF37 (Gold): A slightly darker shade for depth
-      - #FFF8C7 (Light Yellow/White): A bright highlight
-      - #B8860B (Dark Goldenrod): A shadow color
-      The angle (125deg) makes the light appear to come from the top-left.
-    */
+    border-radius: 2px;
     background-image: linear-gradient(125deg, #FFDF00, #D4AF37, #FFF8C7, #B8860B);
+
+    /* The animation properties are now set by JavaScript, so we only need the name here */
+    animation-name: fall;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
 }
 
-/*
-  We no longer need different background-colors for each child,
-  but we still want them to fall at different speeds and times.
-*/
-.confetti:nth-child(1) { left: 10%; animation: fall 10s linear infinite; }
-.confetti:nth-child(2) { left: 20%; animation: fall 8s linear 2s infinite; }
-.confetti:nth-child(3) { left: 40%; animation: fall 12s linear 5s infinite; }
-.confetti:nth-child(4) { left: 70%; animation: fall 9s linear 1s infinite; }
-.confetti:nth-child(5) { left: 85%; animation: fall 7s linear 3s infinite; }
-/* Add more if you have more confetti divs */
-.confetti:nth-child(6) { left: 50%; animation: fall 11s linear 4s infinite; }
-.confetti:nth-child(7) { left: 80%; animation: fall 9s linear 6s infinite; }
+/* REMOVED: All the .confetti:nth-child(...) rules are no longer needed. */
 
-
-/* The falling animation with rotation remains the same */
+/* The keyframe now uses our random CSS variables from the script */
 @keyframes fall {
     to {
-        transform: translateY(100vh) rotate(720deg); /* Increased rotation for more flutter */
+        /*
+          This transform now includes horizontal drift and random rotation,
+          creating the dynamic "flutter" effect from the video.
+        */
+        transform: translateY(110vh)
+                   translateX(var(--confetti-drift, 0px))
+                   rotate(var(--confetti-rotation, 720deg));
         opacity: 0;
     }
 }
