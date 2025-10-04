@@ -277,7 +277,7 @@ body {
     top: -30px;
     opacity: 1;
     /* THIS IS THE FIX: A large border-radius creates the rounded rectangle shape. */
-    border-radius: 4px;
+    border-radius: 5px;
     background-image: linear-gradient(125deg, #F0D886, #CFB153, #EBE3A9, #AD8D44);
 
     /* The animation properties are now set by JavaScript, so we only need the name here */
