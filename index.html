@@ -1,0 +1,63 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Graduation Presentation</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Curtain from Part 1 -->
+    <div id="curtain">
+        <div class="curtain__panel curtain__panel--left"></div>
+        <div id="school-info">
+            <img src="logo.png" alt="School Logo" id="school-logo">
+            <h1 id="school-name">Promoción 202X</h1>
+        </div>
+        <div class="curtain__panel curtain__panel--right"></div>
+    </div>
+
+    <!-- Student Carousel and Animations -->
+    <div id="presentation-container" class="hidden">
+        <div class="confetti"></div>
+        <div class="confetti"></div>
+        <div class="confetti"></div>
+        <div class="confetti"></div>
+        <div class="confetti"></div>
+        <div class="confetti"></div>
+        <div class="confetti"></div>
+        <div class="confetti"></div>
+        <div class="confetti"></div>
+        <div class="confetti"></div>
+        <div class="confetti"></div>
+        <div class="confetti"></div>
+        <div class="confetti"></div>
+        <div class="confetti"></div>
+        <div class="confetti"></div>
+        <div class="confetti"></div>
+        <div class="confetti"></div>
+        <div class="confetti"></div>
+
+        <div id="student-carousel">
+            <iframe id="student-frame" src="student1.html" frameborder="0"></iframe>
+        </div>
+
+        <div class="balloons">
+            <!-- It doesn't matter what the src is, JavaScript will replace it! -->
+            <img src="assets/images/balloon1.png" alt="balloon" class="balloon">
+            <img src="assets/images/balloon1.png" alt="balloon" class="balloon">
+            <img src="assets/images/balloon1.png" alt="balloon" class="balloon">
+        </div>
+        
+        <div id="flare-wrapper-main">
+            <div class="flare-effect"></div>
+            <div class="flare-effect"></div>
+        </div>
+        <!-- Music Player -->
+        <audio id="background-music" src="music.mp3" loop></audio>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,395 @@
+/* Add this at the very top of style.css */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Playfair+Display:wght@700&display=swap');
+
+body {
+    margin: 0;
+    overflow: hidden;
+}
+
+#curtain {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+}
+
+.curtain__panel {
+    position: absolute;
+    top: 0;
+    width: 50%;
+    height: 100%;
+    background-color: #8B0000; /* Theater red */
+    transition: transform 1s ease-in-out;
+}
+
+.curtain__panel--left {
+    left: 0;
+    transform-origin: left;
+}
+
+.curtain__panel--right {
+    right: 0;
+    transform-origin: right;
+}
+
+#school-info {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    color: white;
+}
+
+#school-logo {
+    max-width: 200px;
+}
+
+/* Apply Playfair Display to the main curtain title */
+#school-name {
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    font-size: 3.5em;
+    margin-top: 20px;
+}
+
+.open .curtain__panel--left {
+    transform: scaleX(0);
+}
+
+.open .curtain__panel--right {
+    transform: scaleX(0);
+}
+
+.hidden {
+    display: none;
+}
+
+/* General Presentation Styles */
+#presentation-container {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    background: linear-gradient(to bottom, #001e4d, #004080);
+    overflow: hidden;
+}
+
+#student-carousel {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Smooth transition for iframe content */
+#student-frame {
+    width: 90%;
+    height: 90%;
+    border: none;
+    background-color: transparent;
+    opacity: 1;
+    transition: opacity 0.3s ease-in-out;
+}
+
+/* Student Slide Styles (for studentX.html files) */
+.student-body {
+    background-color: transparent;
+    color: white;
+    font-family: sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    margin: 0;
+}
+
+.student-slide {
+    display: flex;
+    align-items: center;
+    gap: 50px;
+}
+
+/* --- Photo Frame Styling --- */
+
+/* 1. The main container that holds the photo, frame, and flares */
+.photo-container {
+    position: relative;
+    width: 350px;
+    height: 450px;
+}
+
+/* 2. The student's actual photo */
+.student-photo {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 85%;
+    height: 90%;
+    object-fit: cover;
+    z-index: 1;
+    border-radius: 5px;
+}
+
+/* 3. Your SVG photo frame */
+.frame-svg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 2;
+    pointer-events: none;
+    /* Add drop shadow effect matching the card */
+    filter: drop-shadow(0 8px 25px rgba(0, 0, 0, 0.35)) 
+            drop-shadow(0 3px 10px rgba(0, 0, 0, 0.25));
+}
+
+/* --- FLARE STYLES --- */
+
+/* 1. The Main Wrapper: Positioned over the student slide area */
+#flare-wrapper-main {
+    position: absolute;
+    z-index: 5;
+    pointer-events: none;
+    transition: all 0.1s ease-out;
+}
+
+/* 2. The Flare Effect itself */
+.flare-effect {
+    position: absolute;
+    background: radial-gradient(
+        circle at center,
+        #FFFFFF 0%, rgba(255, 255, 255, 0.6) 30%,
+        rgba(255, 255, 255, 0.2) 70%, rgba(255, 255, 255, 0) 100%
+    );
+    width: 55px;
+    height: 55px;
+    border-radius: 55%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    animation: flare-glint 10s infinite ease-in-out;
+    animation-fill-mode: backwards;
+}
+
+/* 3. The Rays */
+.flare-effect::before,
+.flare-effect::after {
+    content: '';
+    position: absolute;
+    background: linear-gradient(
+        to right,
+        rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.5) 40%,
+        rgba(255, 255, 255, 1) 50%, rgba(255, 255, 255, 0.5) 60%,
+        rgba(255, 255, 255, 0)
+    );
+    width: 210px;
+    height: 2px;
+    border-radius: 2px;
+}
+.flare-effect::before { transform: rotate(45deg); }
+.flare-effect::after { transform: rotate(-45deg); }
+
+/* 4. The Animation */
+@keyframes flare-glint {
+    0% { opacity: 0; transform: scale(0.5) rotate(0deg); }
+    20% { opacity: 1; transform: scale(1.1) rotate(90deg); }
+    40% { opacity: 0; transform: scale(1.5) rotate(180deg); }
+    100% { opacity: 0; transform: scale(1.5) rotate(180deg); }
+}
+
+.flare-effect:nth-child(2) {
+    animation-delay: 5s;
+}
+
+/* --- ELEGANT STUDENT CARD STYLES --- */
+
+.student-card {
+    /* Elegant paper-like background */
+    background: linear-gradient(135deg, #f5f5dc 0%, #faf8f3 50%, #f0ead6 100%);
+    padding: 35px 40px;
+    border-radius: 12px;
+    width: 450px;
+    
+    /* Golden double border effect */
+    border: 3px solid #D4AF37;
+    box-shadow: 
+        inset 0 0 0 8px #faf8f3,
+        inset 0 0 0 11px #B8860B,
+        0 10px 40px rgba(0, 0, 0, 0.3),
+        0 4px 15px rgba(0, 0, 0, 0.2);
+    
+    /* Paper texture effect */
+    position: relative;
+    background-image: 
+        repeating-linear-gradient(
+            0deg,
+            transparent,
+            transparent 2px,
+            rgba(218, 165, 32, 0.03) 2px,
+            rgba(218, 165, 32, 0.03) 4px
+        );
+}
+
+/* Paper grain overlay */
+.student-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+    opacity: 0.03;
+    pointer-events: none;
+    border-radius: 12px;
+}
+
+/* Student name styling */
+.student-card h2 {
+    font-family: 'Georgia', serif;
+    font-size: 2.2em;
+    color: #2c1810;
+    margin: 0 0 25px 0;
+    text-align: center;
+    font-weight: 600;
+    text-shadow: 1px 1px 2px rgba(212, 175, 55, 0.2);
+    border-bottom: 2px solid #D4AF37;
+    padding-bottom: 15px;
+    position: relative;
+    z-index: 1;
+}
+
+/* Info section container */
+.student-info {
+    margin: 20px 0;
+    position: relative;
+    z-index: 1;
+}
+
+/* Individual info items */
+.info-item {
+    margin: 15px 0;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(212, 175, 55, 0.3);
+}
+
+.info-item:last-child {
+    border-bottom: none;
+}
+
+/* Labels (Parents, Age, etc.) */
+.info-label {
+    font-family: 'Georgia', serif;
+    font-size: 1em;
+    color: #8B7355;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    display: block;
+    margin-bottom: 5px;
+}
+
+/* Values (actual information) */
+.info-value {
+    font-family: 'Georgia', serif;
+    font-size: 1.1em;
+    color: #3a2817;
+    line-height: 1.5;
+    font-weight: 400;
+}
+
+/* Style for the "&" symbol in parents' names */
+.info-value .ampersand {
+    color: #C4A574;
+    font-weight: 300;
+    padding: 0 3px;
+}
+
+/* Special styling for the future aspirations section */
+.future-section {
+    margin-top: 25px;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.4);
+    border-radius: 8px;
+    border: 1px solid #D4AF37;
+    box-shadow: inset 0 2px 4px rgba(212, 175, 55, 0.1);
+    position: relative;
+    z-index: 1;
+}
+
+.future-section .info-label {
+    color: #B8860B;
+    font-size: 1em;
+}
+
+.future-section .info-value {
+    color: #2c1810;
+    font-weight: 500;
+    font-style: italic;
+}
+
+/* Apply Montserrat to paragraph text inside the student card */
+.student-card p {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 400;
+    font-size: 1.1em;
+    line-height: 1.6;
+}
+
+/* --- BALLOON ANIMATION --- */
+.balloons {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 10;
+}
+
+.balloon {
+    position: absolute;
+    bottom: -450px;
+    width: 180px;
+    height: auto;
+    animation-name: float-up;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+    opacity: 0.9;
+}
+
+@keyframes float-up {
+    0% {
+        transform: translateY(0) rotate(0deg);
+    }
+    100% {
+        transform: translateY(-180vh) translateX(var(--horizontal-drift, 50px)) rotate(15deg);
+    }
+}
+
+/* --- CONFETTI ANIMATION --- */
+.confetti {
+    position: absolute;
+    width: 15px;
+    height: 15px;
+    top: -30px;
+    opacity: 1;
+    border-radius: 7px;
+    background-image: linear-gradient(125deg, #dbb658, #c5a34f, #f8dc95, #af9146);
+    animation-name: fall;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+}
+
+@keyframes fall {
+    to {
+        transform:
+            translateY(110vh)
+            translateX(var(--confetti-drift, 0px))
+            rotateX(var(--confetti-spin-x, 720deg))
+            rotate(var(--confetti-rotation, 720deg));
+        opacity: 0;
+    }
+}
