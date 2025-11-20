@@ -1016,6 +1016,25 @@ body {
     -webkit-font-smoothing: antialiased;
 }
 
+/* Special styling for memories music button */
+.memories-music-btn {
+    /* Position it to the left of the close button */
+    bottom: 40px;
+    right: auto;
+    left: 40px;
+    z-index: 500; /* Higher than overlay content but below modals */
+}
+
+/* Show memories music button only when overlay is visible */
+#memories-overlay:not(.hidden) #memories-music-toggle {
+    display: flex !important;
+}
+
+/* Hide main music button when memories overlay is open */
+#memories-overlay:not(.hidden) ~ #music-toggle {
+    display: none !important;
+}
+
 /* Hover State - Elegant Lift Effect */
 .music-toggle-btn:hover {
     /* Enhanced gradient on hover */
