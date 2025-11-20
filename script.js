@@ -43,23 +43,17 @@ function positionFlareWrapper() {
         
         if (flares.length >= 2) {
             // FLARE 1 (Top-left corner)
-            // Adjust these values to move the flare:
-            // - Increase top value to move DOWN
-            // - Increase left value to move RIGHT
-            flares[0].style.top = '-5px';  // Negative moves UP, positive moves DOWN
-            flares[0].style.left = '-5px'; // Negative moves LEFT, positive moves RIGHT
+            flares[0].style.top = '-5px';
+            flares[0].style.left = '-5px';
             flares[0].style.bottom = 'auto';
             flares[0].style.right = 'auto';
             flares[0].style.transform = 'translate(-50%, -50%)';
             
             // FLARE 2 (Bottom-right corner)
-            // Adjust these values to move the flare:
-            // - Increase bottom value to move UP
-            // - Increase right value to move LEFT
             flares[1].style.top = 'auto';
             flares[1].style.left = 'auto';
-            flares[1].style.bottom = '-5px'; // Negative moves DOWN, positive moves UP
-            flares[1].style.right = '-5px';  // Negative moves RIGHT, positive moves LEFT
+            flares[1].style.bottom = '-5px';
+            flares[1].style.right = '-5px';
             flares[1].style.transform = 'translate(50%, 50%)';
         }
     }, 100);
@@ -350,8 +344,10 @@ function openMemories() {
     // Show overlay
     memoriesOverlay.classList.remove('hidden');
     
-    const music = document.getElementById('background-music');
-    if (music.paused) music.play();
+    // Start memories music
+    if (window.memoriesMusic) {
+        window.memoriesMusic.start();
+    }
 
     isCarouselRunning = true;
     currentIndex = 0; 
@@ -364,6 +360,11 @@ function closeMemories() {
     memoriesOverlay.classList.add('hidden');
     isCarouselRunning = false;
     clearTimeout(memoryTimeout);
+    
+    // Stop memories music
+    if (window.memoriesMusic) {
+        window.memoriesMusic.stop();
+    }
     
     // Reset classes
     frame1.classList.remove('active', 'exit', 'no-transition');
@@ -473,6 +474,222 @@ function createGlitter() {
 createGlitter();
 
 // ==========================================
+// MEMORIES MUSIC MANAGER - Sequential Playlist
+// ==========================================
+
+const memoriesMusicTracks = [
+    document.getElementById('memories-music1'),
+    document.getElementById('memories-music2'),
+    document.getElementById('memories-music3')
+];
+
+let memoriesTrackIndex = 0;
+let memoriesIsPlaying = false;
+let memoriesIsFading = false;
+
+const memoriesMusicToggle = document.getElementById('memories-music-toggle');
+const memoriesPlayIcon = document.getElementById('memories-play-icon');
+const memoriesPauseIcon = document.getElementById('memories-pause-icon');
+
+const FADE_DURATION = 1500; // 1.5 seconds fade time
+
+/**
+ * Fade audio volume smoothly for memories music
+ */
+function memoriesFadeVolume(audio, startVolume, endVolume, duration) {
+    return new Promise((resolve) => {
+        if (!audio) {
+            resolve();
+            return;
+        }
+
+        const steps = 20;
+        const stepTime = duration / steps;
+        const volumeStep = (endVolume - startVolume) / steps;
+        let currentStep = 0;
+
+        audio.volume = startVolume;
+
+        const fadeInterval = setInterval(() => {
+            currentStep++;
+            let newVol = startVolume + (volumeStep * currentStep);
+            newVol = Math.max(0, Math.min(1, newVol));
+            
+            audio.volume = newVol;
+
+            if (currentStep >= steps) {
+                clearInterval(fadeInterval);
+                audio.volume = endVolume;
+                resolve();
+            }
+        }, stepTime);
+    });
+}
+
+/**
+ * Play a specific memories track from the beginning
+ */
+async function memoriesPlayTrack(index) {
+    const track = memoriesMusicTracks[index];
+    if (!track) return;
+
+    memoriesTrackIndex = index;
+    track.currentTime = 0;
+    
+    try {
+        await track.play();
+        memoriesIsPlaying = true;
+        await memoriesFadeVolume(track, 0, 1, FADE_DURATION);
+        console.log(`Memories: Now playing Track ${index + 1}`);
+    } catch (error) {
+        console.error('Error playing memories track:', error);
+    }
+}
+
+/**
+ * Pause current memories track (keeps position)
+ */
+async function memoriesPauseTrack() {
+    const track = memoriesMusicTracks[memoriesTrackIndex];
+    if (!track || !memoriesIsPlaying) return;
+
+    memoriesIsFading = true;
+    await memoriesFadeVolume(track, track.volume, 0, FADE_DURATION);
+    track.pause();
+    track.volume = 1;
+    memoriesIsPlaying = false;
+    memoriesIsFading = false;
+    console.log(`Memories: Paused at ${track.currentTime.toFixed(1)}s`);
+}
+
+/**
+ * Resume current memories track
+ */
+async function memoriesResumeTrack() {
+    const track = memoriesMusicTracks[memoriesTrackIndex];
+    if (!track) return;
+
+    memoriesIsFading = true;
+    try {
+        await track.play();
+        memoriesIsPlaying = true;
+        await memoriesFadeVolume(track, 0, 1, FADE_DURATION);
+        memoriesIsFading = false;
+        console.log(`Memories: Resumed at ${track.currentTime.toFixed(1)}s`);
+    } catch (error) {
+        console.error('Error resuming memories track:', error);
+        memoriesIsFading = false;
+    }
+}
+
+/**
+ * Stop current memories track (resets position)
+ */
+async function memoriesStopTrack() {
+    const track = memoriesMusicTracks[memoriesTrackIndex];
+    if (!track) return;
+
+    if (memoriesIsPlaying) {
+        memoriesIsFading = true;
+        await memoriesFadeVolume(track, track.volume, 0, FADE_DURATION);
+        memoriesIsFading = false;
+    }
+    
+    track.pause();
+    track.currentTime = 0;
+    track.volume = 1;
+    memoriesIsPlaying = false;
+    
+    // Remove playing state from button
+    if (memoriesMusicToggle) {
+        memoriesMusicToggle.classList.remove('playing');
+        if (memoriesPlayIcon) memoriesPlayIcon.classList.remove('hidden');
+        if (memoriesPauseIcon) memoriesPauseIcon.classList.add('hidden');
+    }
+    
+    console.log('Memories: Stopped and reset');
+}
+
+/**
+ * Play next memories track in sequence
+ */
+async function memoriesPlayNextTrack() {
+    const track = memoriesMusicTracks[memoriesTrackIndex];
+    if (track) {
+        track.pause();
+        track.currentTime = 0;
+        track.volume = 1;
+    }
+
+    memoriesTrackIndex = (memoriesTrackIndex + 1) % memoriesMusicTracks.length;
+    await memoriesPlayTrack(memoriesTrackIndex);
+}
+
+/**
+ * Toggle memories music
+ */
+async function toggleMemoriesMusic() {
+    if (memoriesIsFading) return;
+
+    if (memoriesIsPlaying) {
+        await memoriesPauseTrack();
+        if (memoriesPlayIcon) memoriesPlayIcon.classList.remove('hidden');
+        if (memoriesPauseIcon) memoriesPauseIcon.classList.add('hidden');
+        if (memoriesMusicToggle) memoriesMusicToggle.classList.remove('playing');
+    } else {
+        await memoriesResumeTrack();
+        if (memoriesPlayIcon) memoriesPlayIcon.classList.add('hidden');
+        if (memoriesPauseIcon) memoriesPauseIcon.classList.remove('hidden');
+        if (memoriesMusicToggle) memoriesMusicToggle.classList.add('playing');
+    }
+}
+
+/**
+ * Start memories music
+ */
+async function startMemoriesMusic() {
+    if (!memoriesIsPlaying) {
+        await memoriesPlayTrack(0);
+        
+        if (memoriesPlayIcon && memoriesPauseIcon && memoriesMusicToggle) {
+            memoriesPlayIcon.classList.add('hidden');
+            memoriesPauseIcon.classList.remove('hidden');
+            memoriesMusicToggle.classList.add('playing');
+        }
+    }
+}
+
+/**
+ * Initialize memories music system
+ */
+function initMemoriesMusicSystem() {
+    memoriesMusicTracks.forEach((track, index) => {
+        if (track) {
+            track.addEventListener('ended', () => {
+                console.log(`Memories Track ${index + 1} ended, playing next...`);
+                memoriesPlayNextTrack();
+            });
+        }
+    });
+
+    if (memoriesMusicToggle) {
+        memoriesMusicToggle.onclick = toggleMemoriesMusic;
+    }
+
+    console.log('Memories music system initialized with', memoriesMusicTracks.length, 'tracks');
+}
+
+// Initialize memories music system
+initMemoriesMusicSystem();
+
+// Export functions
+window.memoriesMusic = {
+    start: startMemoriesMusic,
+    stop: memoriesStopTrack,
+    toggle: toggleMemoriesMusic
+};
+
+// ==========================================
 // MUSIC MANAGER - Sequential Playlist with Resume Support
 // ==========================================
 
@@ -485,7 +702,6 @@ const musicTracks = [
 let currentTrackIndex = 0;
 let isPlaying = false;
 let isFading = false;
-const FADE_DURATION = 1500; // 1.5 seconds fade time
 
 const musicToggleBtn = document.getElementById('music-toggle');
 const playIcon = document.getElementById('play-icon');
@@ -510,7 +726,6 @@ function fadeVolume(audio, startVolume, endVolume, duration) {
 
         const fadeInterval = setInterval(() => {
             currentStep++;
-            // Ensure volume stays within 0.0 and 1.0 bounds
             let newVol = startVolume + (volumeStep * currentStep);
             newVol = Math.max(0, Math.min(1, newVol));
             
@@ -533,17 +748,12 @@ async function playTrack(index) {
     if (!track) return;
 
     currentTrackIndex = index;
-    
-    // Reset track to beginning
     track.currentTime = 0;
     
     try {
         await track.play();
         isPlaying = true;
-        
-        // Fade in
         await fadeVolume(track, 0, 1, FADE_DURATION);
-        
         console.log(`Now playing: Track ${index + 1}`);
     } catch (error) {
         console.error('Error playing track:', error);
@@ -558,19 +768,11 @@ async function pauseCurrentTrack() {
     if (!track || !isPlaying) return;
 
     isFading = true;
-    
-    // Fade out
     await fadeVolume(track, track.volume, 0, FADE_DURATION);
-    
-    // Pause but DO NOT reset currentTime
     track.pause();
-    
-    // Reset volume to 1 so it's ready for the next fade-in
     track.volume = 1; 
-    
     isPlaying = false;
     isFading = false;
-    
     console.log(`Paused at ${track.currentTime.toFixed(1)}s`);
 }
 
@@ -582,15 +784,10 @@ async function resumeCurrentTrack() {
     if (!track) return;
 
     isFading = true;
-
     try {
-        // Just play(), do NOT reset currentTime
         await track.play();
         isPlaying = true;
-        
-        // Fade in
         await fadeVolume(track, 0, 1, FADE_DURATION);
-        
         isFading = false;
         console.log(`Resumed at ${track.currentTime.toFixed(1)}s`);
     } catch (error) {
@@ -601,7 +798,6 @@ async function resumeCurrentTrack() {
 
 /**
  * Stop current track (RESETS position to 0)
- * Used when going back to the intro curtain
  */
 async function stopCurrentTrack() {
     const track = musicTracks[currentTrackIndex];
@@ -609,19 +805,15 @@ async function stopCurrentTrack() {
 
     if (isPlaying) {
         isFading = true;
-        // Fade out
         await fadeVolume(track, track.volume, 0, FADE_DURATION);
         isFading = false;
     }
     
-    // Pause and RESET position
     track.pause();
     track.currentTime = 0;
     track.volume = 1;
-    
     isPlaying = false;
     
-    // Remove playing state from button
     if (musicToggleBtn) {
         musicToggleBtn.classList.remove('playing');
         if (playIcon) playIcon.classList.remove('hidden');
@@ -635,7 +827,6 @@ async function stopCurrentTrack() {
  * Play next track in sequence
  */
 async function playNextTrack() {
-    // Stop current track without fade
     const track = musicTracks[currentTrackIndex];
     if (track) {
         track.pause();
@@ -643,32 +834,23 @@ async function playNextTrack() {
         track.volume = 1;
     }
 
-    // Move to next track
     currentTrackIndex = (currentTrackIndex + 1) % musicTracks.length;
-    
-    // Play new track
     await playTrack(currentTrackIndex);
 }
 
 /**
- * Main Toggle Function attached to the button
+ * Toggle play/pause with smooth fade
  */
 async function toggleMusic() {
-    if (isFading) return; // Prevent clicking while fading
+    if (isFading) return;
 
     if (isPlaying) {
-        // === PAUSE ===
         await pauseCurrentTrack();
-        
-        // Update UI
         if (playIcon) playIcon.classList.remove('hidden');
         if (pauseIcon) pauseIcon.classList.add('hidden');
         if (musicToggleBtn) musicToggleBtn.classList.remove('playing');
     } else {
-        // === RESUME ===
         await resumeCurrentTrack();
-        
-        // Update UI
         if (playIcon) playIcon.classList.add('hidden');
         if (pauseIcon) pauseIcon.classList.remove('hidden');
         if (musicToggleBtn) musicToggleBtn.classList.add('playing');
