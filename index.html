@@ -129,7 +129,12 @@
     <audio id="music2" src="music2.mp3"></audio>
     <audio id="music3" src="music3.mp3"></audio>
 
-    <!-- Music Toggle Button (Fixed Position) -->
+    <!-- Memories Music Tracks -->
+    <audio id="memories-music1" src="song1.mp3"></audio>
+    <audio id="memories-music2" src="song2.mp3"></audio>
+    <audio id="memories-music3" src="song3.mp3"></audio>
+
+    <!-- Music Toggle Button (Fixed Position - Main Presentation) -->
     <button id="music-toggle" class="music-toggle-btn" title="Toggle Music">
         <!-- Play Icon (visible when music is paused) -->
         <svg id="play-icon" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
@@ -138,6 +143,19 @@
         
         <!-- Pause Icon (visible when music is playing) -->
         <svg id="pause-icon" class="hidden" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z"/>
+        </svg>
+    </button>
+
+    <!-- Music Toggle Button for Memories Overlay -->
+    <button id="memories-music-toggle" class="music-toggle-btn memories-music-btn" title="Toggle Memories Music" style="display: none;">
+        <!-- Play Icon (visible when music is paused) -->
+        <svg id="memories-play-icon" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M8 5v14l11-7z"/>
+        </svg>
+        
+        <!-- Pause Icon (visible when music is playing) -->
+        <svg id="memories-pause-icon" class="hidden" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
             <path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z"/>
         </svg>
     </button>
