@@ -1037,23 +1037,23 @@ window.musicManager = {
 // PLAY BUTTON - Start Presentation Functionality
 // ==========================================
 
-/**
- * Add this function to handle the play button starting the presentation
- * Place this AFTER your music manager code
- */
 function initPlayButton() {
-    const playBtn = document.getElementById('play-btn'); // Adjust ID to match your button
+    // Use the existing music-toggle button
+    const playBtn = document.getElementById('music-toggle');
     
     if (playBtn) {
-        playBtn.addEventListener('click', () => {
-            console.log('Play button clicked - Starting presentation');
+        // Remove the old onclick handler and add new one
+        playBtn.onclick = (e) => {
+            e.preventDefault();
             
             const curtain = document.getElementById('curtain');
             const presentationContainer = document.getElementById('presentation-container');
             const memoriesBtn = document.getElementById('memories-btn');
             
-            // Check if curtain is already open
+            // If curtain is CLOSED - START the presentation
             if (!curtain.classList.contains('open')) {
+                console.log('Starting presentation...');
+                
                 // Show presentation immediately
                 presentationContainer.classList.remove('hidden');
                 
@@ -1077,16 +1077,16 @@ function initPlayButton() {
                     document.body.focus();
                 }, 50);
             } else {
-                // If already open, just toggle music
+                // If curtain is OPEN - just toggle music
                 if (window.musicManager) {
                     window.musicManager.toggle();
                 }
             }
-        });
+        };
         
-        console.log('Play button initialized');
+        console.log('Play button initialized on music-toggle');
     } else {
-        console.warn('Play button not found - check the button ID');
+        console.warn('music-toggle button not found');
     }
 }
 
