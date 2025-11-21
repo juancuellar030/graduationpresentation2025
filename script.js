@@ -205,56 +205,186 @@ document.addEventListener('keydown', (event) => {
 // Reposition flares on window resize
 window.addEventListener('resize', positionFlareWrapper);
 
-// ===== TOUCH/SWIPE SUPPORT FOR MOBILE DEVICES =====
+// ==========================================
+// ENHANCED TOUCH/SWIPE SUPPORT
+// Replace your existing swipe code with this improved version
+// ==========================================
+
 let touchStartX = 0;
 let touchEndX = 0;
 let touchStartY = 0;
 let touchEndY = 0;
+let touchStartTime = 0;
 
 const presentationContainer = document.getElementById('presentation-container');
 
-// Detect touch start
+/**
+ * Detect touch start
+ */
 presentationContainer.addEventListener('touchstart', (event) => {
     touchStartX = event.changedTouches[0].screenX;
     touchStartY = event.changedTouches[0].screenY;
+    touchStartTime = Date.now();
 }, { passive: true });
 
-// Detect touch end and determine swipe direction
+/**
+ * Detect touch end and determine swipe direction
+ */
 presentationContainer.addEventListener('touchend', (event) => {
     touchEndX = event.changedTouches[0].screenX;
     touchEndY = event.changedTouches[0].screenY;
     handleSwipe();
 }, { passive: true });
 
+/**
+ * Enhanced swipe handler with better detection
+ */
 function handleSwipe() {
     const curtain = document.getElementById('curtain');
+    const iframe = document.getElementById('student-frame');
     
-    // Don't handle swipes if curtain is still closed
+    // Don't handle swipes if curtain is closed
     if (!curtain.classList.contains('open')) {
         return;
     }
     
+    // Don't handle swipes on endscreen (let endscreen handle it)
+    if (iframe && iframe.src && iframe.src.includes('endscreen.html')) {
+        return;
+    }
+    
     const horizontalDiff = touchEndX - touchStartX;
-    const verticalDiff = Math.abs(touchEndY - touchStartY);
+    const verticalDiff = touchEndY - touchStartY;
+    const swipeTime = Date.now() - touchStartTime;
     
-    // Minimum swipe distance (in pixels)
-    const minSwipeDistance = 50;
+    // Configuration
+    const minSwipeDistance = 50; // Minimum pixels to register as swipe
+    const maxSwipeTime = 500; // Maximum time in ms for a swipe (prevents slow drags)
     
-    // Only trigger if horizontal swipe is longer than vertical (to avoid interfering with scrolling)
-    if (Math.abs(horizontalDiff) > minSwipeDistance && Math.abs(horizontalDiff) > verticalDiff) {
+    // Calculate absolute distances
+    const absHorizontal = Math.abs(horizontalDiff);
+    const absVertical = Math.abs(verticalDiff);
+    
+    // Only trigger if:
+    // 1. Horizontal swipe is longer than vertical (to avoid scroll interference)
+    // 2. Swipe distance is sufficient
+    // 3. Swipe was quick enough (not a slow drag)
+    if (absHorizontal > minSwipeDistance && 
+        absHorizontal > absVertical && 
+        swipeTime < maxSwipeTime) {
+        
+        console.log(`Swipe detected: ${horizontalDiff > 0 ? 'RIGHT' : 'LEFT'} (${absHorizontal}px in ${swipeTime}ms)`);
+        
         if (horizontalDiff > 0) {
             // Swiped RIGHT - go to PREVIOUS student
-            const prevIndex = (currentStudentIndex - 1 + studentFiles.length) % studentFiles.length;
-            currentStudentIndex = prevIndex;
-            transitionToStudent(prevIndex);
+            navigateToPrevious();
         } else {
             // Swiped LEFT - go to NEXT student
-            const nextIndex = (currentStudentIndex + 1) % studentFiles.length;
-            currentStudentIndex = nextIndex;
-            transitionToStudent(nextIndex);
+            navigateToNext();
         }
     }
 }
+
+/**
+ * Navigate to next student (reusable for both keyboard and touch)
+ */
+function navigateToNext() {
+    const nextIndex = (currentStudentIndex + 1) % studentFiles.length;
+    currentStudentIndex = nextIndex;
+    transitionToStudent(nextIndex);
+    document.body.focus();
+    console.log(`Navigated to student ${nextIndex + 1}`);
+}
+
+/**
+ * Navigate to previous student (reusable for both keyboard and touch)
+ */
+function navigateToPrevious() {
+    const curtain = document.getElementById('curtain');
+    const presentationContainer = document.getElementById('presentation-container');
+    const memoriesBtn = document.getElementById('memories-btn');
+    
+    // Check if we're at the first student
+    if (currentStudentIndex === 0) {
+        // Go back to intro
+        curtain.classList.remove('open');
+        curtain.classList.add('closed');
+        
+        if (memoriesBtn) memoriesBtn.classList.remove('fade-out');
+        
+        setTimeout(() => {
+            presentationContainer.classList.add('hidden');
+            if (window.musicManager) {
+                window.musicManager.stop();
+            }
+        }, 3000);
+        
+        console.log('Returned to intro');
+    } else {
+        // Move backward to previous student
+        const prevIndex = (currentStudentIndex - 1 + studentFiles.length) % studentFiles.length;
+        currentStudentIndex = prevIndex;
+        transitionToStudent(prevIndex);
+        console.log(`Navigated to student ${prevIndex + 1}`);
+    }
+    
+    document.body.focus();
+}
+
+// ==========================================
+// CURTAIN OPENING GESTURE
+// Add swipe support to open the curtain
+// ==========================================
+
+const curtainElement = document.getElementById('curtain');
+
+curtainElement.addEventListener('touchstart', (event) => {
+    touchStartX = event.changedTouches[0].screenX;
+    touchStartY = event.changedTouches[0].screenY;
+    touchStartTime = Date.now();
+}, { passive: true });
+
+curtainElement.addEventListener('touchend', (event) => {
+    const curtain = document.getElementById('curtain');
+    
+    // Only handle if curtain is closed
+    if (curtain.classList.contains('open')) {
+        return;
+    }
+    
+    touchEndX = event.changedTouches[0].screenX;
+    touchEndY = event.changedTouches[0].screenY;
+    
+    const horizontalDiff = touchEndX - touchStartX;
+    const swipeTime = Date.now() - touchStartTime;
+    
+    // Swipe left to open curtain
+    if (horizontalDiff < -80 && swipeTime < 500) {
+        console.log('Swipe detected on curtain - Opening presentation');
+        
+        const presentationContainer = document.getElementById('presentation-container');
+        const memoriesBtn = document.getElementById('memories-btn');
+        
+        presentationContainer.classList.remove('hidden');
+        
+        setTimeout(() => {
+            curtain.classList.add('open');
+            curtain.classList.remove('closed');
+            
+            if (memoriesBtn) memoriesBtn.classList.add('fade-out');
+            
+            if (window.musicManager) {
+                window.musicManager.start();
+            }
+            
+            randomizeBalloons();
+            randomizeConfetti();
+            positionFlareWrapper();
+            
+            document.body.focus();
+        }, 50);
+    }
+}, { passive: true });
 
 // CRITICAL FIX: Ensure body is always focusable and maintains focus
 document.body.setAttribute('tabindex', '0');
@@ -690,7 +820,8 @@ window.memoriesMusic = {
 };
 
 // ==========================================
-// MUSIC MANAGER - Sequential Playlist with Resume Support
+// MUSIC MANAGER - Clean Version (No Duplicates)
+// Use THIS to replace your music manager section
 // ==========================================
 
 const musicTracks = [
@@ -741,7 +872,7 @@ function fadeVolume(audio, startVolume, endVolume, duration) {
 }
 
 /**
- * Play a specific track from the beginning (Resets time)
+ * Play track from beginning
  */
 async function playTrack(index) {
     const track = musicTracks[index];
@@ -761,7 +892,7 @@ async function playTrack(index) {
 }
 
 /**
- * Pause current track (KEEPS position)
+ * Pause (keeps position)
  */
 async function pauseCurrentTrack() {
     const track = musicTracks[currentTrackIndex];
@@ -777,7 +908,7 @@ async function pauseCurrentTrack() {
 }
 
 /**
- * Resume current track (From CURRENT position)
+ * Resume (from current position)
  */
 async function resumeCurrentTrack() {
     const track = musicTracks[currentTrackIndex];
@@ -797,7 +928,7 @@ async function resumeCurrentTrack() {
 }
 
 /**
- * Stop current track (RESETS position to 0)
+ * Stop completely (resets position)
  */
 async function stopCurrentTrack() {
     const track = musicTracks[currentTrackIndex];
@@ -824,7 +955,7 @@ async function stopCurrentTrack() {
 }
 
 /**
- * Play next track in sequence
+ * Play next track
  */
 async function playNextTrack() {
     const track = musicTracks[currentTrackIndex];
@@ -839,7 +970,7 @@ async function playNextTrack() {
 }
 
 /**
- * Toggle play/pause with smooth fade
+ * Toggle pause/resume
  */
 async function toggleMusic() {
     if (isFading) return;
@@ -858,13 +989,12 @@ async function toggleMusic() {
 }
 
 /**
- * Start music (called when presentation opens)
+ * Start music
  */
 async function startMusic() {
     if (!isPlaying) {
-        await playTrack(0); // Start with first track
+        await playTrack(0);
         
-        // Update button UI
         if (playIcon && pauseIcon && musicToggleBtn) {
             playIcon.classList.add('hidden');
             pauseIcon.classList.remove('hidden');
@@ -874,10 +1004,9 @@ async function startMusic() {
 }
 
 /**
- * Initialize music system
+ * Initialize system
  */
 function initMusicSystem() {
-    // Set up track end listeners for sequential playback
     musicTracks.forEach((track, index) => {
         if (track) {
             track.addEventListener('ended', () => {
@@ -887,7 +1016,6 @@ function initMusicSystem() {
         }
     });
 
-    // Set up toggle button
     if (musicToggleBtn) {
         musicToggleBtn.onclick = toggleMusic; 
     }
@@ -895,43 +1023,75 @@ function initMusicSystem() {
     console.log('Music system initialized with', musicTracks.length, 'tracks');
 }
 
-// Initialize music system when page loads
+// Initialize
 initMusicSystem();
 
-// Export functions for use in main script
+// Export
 window.musicManager = {
     start: startMusic,
     stop: stopCurrentTrack,
     toggle: toggleMusic
 };
 
-// Add this enhancement to your existing music manager code
-// This adds visual feedback to the button
+// ==========================================
+// PLAY BUTTON - Start Presentation Functionality
+// ==========================================
 
 /**
- * Toggle play/pause with smooth fade (ENHANCED with visual feedback)
+ * Add this function to handle the play button starting the presentation
+ * Place this AFTER your music manager code
  */
-async function toggleMusic() {
-    if (isFading) return; // Don't allow toggle during fade
-
-    if (isPlaying) {
-        // Pause with fade out (keeps position)
-        await pauseCurrentTrack();
+function initPlayButton() {
+    const playBtn = document.getElementById('play-btn'); // Adjust ID to match your button
+    
+    if (playBtn) {
+        playBtn.addEventListener('click', () => {
+            console.log('Play button clicked - Starting presentation');
+            
+            const curtain = document.getElementById('curtain');
+            const presentationContainer = document.getElementById('presentation-container');
+            const memoriesBtn = document.getElementById('memories-btn');
+            
+            // Check if curtain is already open
+            if (!curtain.classList.contains('open')) {
+                // Show presentation immediately
+                presentationContainer.classList.remove('hidden');
+                
+                // Small delay then start curtain animation
+                setTimeout(() => {
+                    curtain.classList.add('open');
+                    curtain.classList.remove('closed');
+                    
+                    // Hide memories button
+                    if (memoriesBtn) memoriesBtn.classList.add('fade-out');
+                    
+                    // Start music
+                    if (window.musicManager) {
+                        window.musicManager.start();
+                    }
+                    
+                    randomizeBalloons();
+                    randomizeConfetti();
+                    positionFlareWrapper();
+                    
+                    document.body.focus();
+                }, 50);
+            } else {
+                // If already open, just toggle music
+                if (window.musicManager) {
+                    window.musicManager.toggle();
+                }
+            }
+        });
         
-        // Update button icon and remove playing state
-        playIcon.classList.remove('hidden');
-        pauseIcon.classList.add('hidden');
-        musicToggleBtn.classList.remove('playing');
+        console.log('Play button initialized');
     } else {
-        // Resume from current position
-        await resumeCurrentTrack();
-        
-        // Update button
-        playIcon.classList.add('hidden');
-        pauseIcon.classList.remove('hidden');
-        musicToggleBtn.classList.add('playing');
+        console.warn('Play button not found - check the button ID');
     }
 }
+
+// Call this after the page loads
+initPlayButton();
 
 /**
  * Start music (called when presentation opens) - ENHANCED
